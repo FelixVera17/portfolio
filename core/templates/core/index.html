@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+
+Visualizador de rucs
+{% endblock %}
+
+{% block content %}
+
+
+<h1>Bienvenido al Sistema de RUC</h1>
+
+<h2>Historial de Cargas Recientes</h2>
+
+{% if historial_cargas %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Archivo</th>
+                <th>Fecha de carga</th>
+                <th>Registros cargados</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carga in historial_cargas %}
+                <tr>
+                    <td>{{ carga.name_arc }}</td>
+                    <td>{{ carga.fecha_carga|date:"d/m/Y H:i" }}</td>
+                    <td>{{ carga.registros }}</td>
+                    <td>
+                        <a href="{% url 'core:visualize_ruc' %}">Ver RUC</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hay cargas registradas aún.</p>
+{% endif %}
+
+
+
+<div  style="float: left; width:65%; font-size: 1.2em;">
+    <tr>
+        <td align = "right">
+            <a style="margin-top:5px; padding:4px 5px; background:#00a133" href="{% url 'core:upload_ruc' %}" class="btn btn-xs btn-default" role="button"><i class="fa fa-address-card"  aria-hidden="true"></i> Ir a subir archivo</a>
+        </td>
+    </tr>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    <h2>Listado de RUC - Primeros 50 registros</h2>
+    {% if ruc_data %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Codigo</th>
+                    <th>clave</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ruc in ruc_data %}
+                    <tr>
+                        <td>{{ ruc.id }}</td>
+                        <td>{{ ruc.documento }}</td>
+                        <td>{{ ruc.nombre }}</td>
+                        <td>{{ ruc.codigo }}</td>
+                        <td>{{ ruc.clave }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            <a href="{{request.META.HTTP_REFERER}}" class="btn btn-primary">inicio</a>
+
+    {% else %}
+        <p>No hay datos disponibles.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2d082123;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    max-width: 1800px;
+    margin: auto;
+    padding: 200px;
+    background: white;
+    border-radius: 100px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinea verticalmente el contenido */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+a {
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    margin-left: 10px; /* Espacio entre el botón y el ícono */
+}
+
+a i {
+    font-size: 24px; /* Ajusta el tamaño del ícono */
+    color: red; /* Color del ícono */
+    transition: color 0.3s; /* Efecto de transición para el color */
+}
+
+a:hover i {
+    color: darkred; /* Color del ícono al pasar el mouse */
+}
