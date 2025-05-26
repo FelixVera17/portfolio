@@ -2,6 +2,14 @@
 
 {% block content %}
     <h2>Listado de RUC - Primeros 50 registros</h2>
+    <a href="{% url 'core:sort_ruc_timsort' %}" class="btn btn-secondary">Ordenar por timsort</a>
+    <a href="{% url 'core:sort_quicksort' %}" class="btn btn-secondary">Ordenar por quicksort</a>
+    <form method="POST" action="{% url 'core:visualize_ruc' %}">
+        {% csrf_token %}
+        <button type="submit" name="accion" class="btn btn-sm btn-danger" value="PDF">
+            <span class="fa fa-file-pdf-o" aria-hidden="true"></span> <strong>PDF</strong>
+        </button>
+    </form>
     {% if ruc_data %}
         <table border="1">
             <thead>

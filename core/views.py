@@ -1,7 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import HttpResponse
 from core.forms import UploadFileForm
 from core.models import Ruc, CargaRuc
+from io import BytesIO
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, TableStyle
+from reportlab.lib.pagesizes import A4, portrait
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+from core.functions import timSort, quicksort
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 import pandas as pd
 
 
@@ -59,13 +67,110 @@ def upload_ruc(request):
 
 def visualize_ruc(request):
     template_name = 'core/visualize_ruc.html'
-
     ruc_data = Ruc.objects.all()[:50]
+
+    if request.POST.get('accion') == 'PDF':
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="reporte_ruc.pdf"'
+        buff = BytesIO()
+
+        doc = SimpleDocTemplate(buff,
+                                 pagesize=portrait(A4),
+                                 rightMargin=60,
+                                 leftMargin=60,
+                                 topMargin=20,
+                                 bottomMargin=45)
+        
+        doc.title = 'RUC PDF'
+
+        
+        styles = getSampleStyleSheet()
+        text_center = styles['Normal']
+        text_center.fontSize = 8
+        text_center.leading = 10
+        text_center.alignment = 1  
+
+        text_right = styles['Normal']
+        text_right.fontSize = 8
+        text_right.leading = 8
+        text_right.alignment = 2 
+
+        text_left = styles['Normal']
+        text_left.fontSize = 8
+        text_left.leading = 8
+        text_left.alignment = 0
+
+       
+        story = []
+
+        title = Paragraph("Reporte de RUC", text_center)
+        story.append(title)
+        story.append(Spacer(1, 12))
+
+        data = [['id','documento', 'nombre', 'codigo' , 'codigo']] 
+        for ruc in ruc_data:
+            data.append([ruc.id, ruc.documento, ruc.nombre, ruc.codigo, ruc.clave])  
+
+        table = Table(data)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+        
+        story.append(table)
+
+        doc.build(story)
+
+        pdf = buff.getvalue()
+        buff.close()
+        response.write(pdf)
+        return response
 
     return render(request, template_name, {'ruc_data': ruc_data})
 
 
 
+def sort_ruc_timsort(request):
+    template_name = 'core/visualize_ruc.html'
+    ruc_data = Ruc.objects.all()[:50]
+
+    nombres = [ruc.nombre for ruc in ruc_data]
+    
+    timSort(nombres)
+
+
+    ruc_data_sorted = []
+    
+    for nombre in nombres:
+        for ruc in ruc_data:
+            if ruc.nombre == nombre:
+                ruc_data_sorted.append(ruc)
+                break
+
+
+    return render(request, template_name, {'ruc_data':ruc_data_sorted})
 
 
 
+
+def sort_quicksort(request):
+    template_name = 'core/visualize_ruc.html'
+    ruc_data = Ruc.objects.all()[:50]
+    
+    nombres = [str(ruc.nombre) for ruc in ruc_data]
+    
+    quicksort(nombres,0 , len(nombres)-1)
+    
+    ruc_data_sorted = []
+    
+    for nombre in nombres:
+        for ruc in ruc_data:
+            if ruc.nombre == nombre:
+                ruc_data_sorted.append(ruc)
+                break
+    return render(request, template_name, {'ruc_data': ruc_data_sorted})
